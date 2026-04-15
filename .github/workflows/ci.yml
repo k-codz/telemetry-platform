@@ -1,0 +1,50 @@
+name: Backend CI
+
+# Define the triggers (the State Machine transitions)
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+# Define the environment working directory for all steps
+defaults:
+  run:
+    working-directory: ./backend
+
+jobs:
+  build-test-lint:
+    # Use the latest Ubuntu ephemeral runner provided by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the DAG at this specific commit
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Setup the Go toolchain
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.26.x' # Match the version from our Dockerfile and host
+        # This caches downloaded modules, speeding up future runs
+        cache-dependency-path: backend/go.sum
+
+    # 3. Fail Fast: Run the Linter
+    # We use golangci-lint, the industry standard meta-linter for Go
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v4
+      with:
+        version: latest
+        working-directory: backend
+        # We only want to print issues, not try to auto-fix them in CI
+        args: --timeout=3m
+
+    # 4. Run the Unit Tests
+    - name: Run Unit Tests
+      # -v enables verbose output, -race detects concurrent memory data races
+      run: go test -v -race ./...
+
+    # 5. Verify the code actually compiles
+    - name: Verify Build
+      run: CGO_ENABLED=0 GOOS=linux go build -o /dev/null main.go
