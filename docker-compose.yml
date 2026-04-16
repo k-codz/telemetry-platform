@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  dev-workspace:
+    # Using a stable, slim Ubuntu image as our isolated foundation
+    image: ubuntu:22.04
+    container_name: dev-workspace
+    # 'sleep infinity' keeps the container running indefinitely in the background
+    # without needing a long-running web server process to keep it alive yet.
+    command: sleep infinity
+    volumes:
+      # Bind mount: Maps your host's current directory to /workspace in the container.
+      # This allows you to edit code on your host OS using your favorite IDE,
+      # but run and compile the code safely inside the isolated container.
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
