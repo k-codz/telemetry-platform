@@ -1,0 +1,55 @@
+---
+- name: Configure Telemetry API Server
+  hosts: api_servers
+  # 'become: yes' tells Ansible to execute all tasks with sudo privileges
+  become: yes
+
+  tasks:
+    # ---------------------------------------------------------
+    # SECTION 1: Install Docker
+    # ---------------------------------------------------------
+    - name: Update APT cache and install dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Docker's official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+        state: present
+
+    - name: Install Docker CE (Community Edition)
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    # ==========================================
+    # CD PHASE: PULL AND RUN PRE-BUILT IMAGE
+    # ==========================================
+    - name: Pull latest Docker Image from GHCR
+      # REPLACE THIS WITH YOUR ACTUAL USERNAME (LOWERCASE)
+      command: docker pull ghcr.io/k-codz/telemetry-api:latest
+
+    - name: Stop existing container (if running)
+      # The '|| true' ensures Ansible doesn't crash if the container isn't running yet
+      shell: docker stop telemetry-api-server || true
+
+    - name: Remove existing container (if exists)
+      shell: docker rm telemetry-api-server || true
+
+    - name: Run new API Container
+      # REPLACE THIS WITH YOUR ACTUAL USERNAME (LOWERCASE)
+      shell: docker run -d --name telemetry-api-server --restart always -p 8080:8080 ghcr.io/k-codz/telemetry-api:latest
