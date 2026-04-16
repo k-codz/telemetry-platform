@@ -1,4 +1,4 @@
-name: Backend CI
+name: Backend CI/CD
 
 # Define the triggers (the State Machine transitions)
 on:
@@ -6,6 +6,11 @@ on:
     branches: [ "main" ]
   push:
     branches: [ "main" ]
+
+# We need these permissions to push to the GitHub Container Registry
+permissions:
+  contents: read
+  packages: write
 
 # Define the environment working directory for all steps
 defaults:
@@ -47,3 +52,31 @@ jobs:
     # 5. Verify the code actually compiles
     - name: Verify Build
       run: CGO_ENABLED=0 GOOS=linux go build -o /dev/null main.go
+
+  # Deploy to GHCR (Only runs on the 'main' branch if tests pass)
+  publish-docker-image:
+    needs: build-test-lint
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        # github.actor is an automatic variable containing your username
+        username: ${{ github.actor }}
+        # GITHUB_TOKEN is an automatic secure token provided by GitHub Actions
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        # Notice we are targeting the backend directory where the Dockerfile lives
+        context: ./backend
+        push: true
+        # REPLACE THIS WITH YOUR ACTUAL USERNAME (MUST BE LOWERCASE)
+        tags: ghcr.io/k-codz/telemetry-api:latest
