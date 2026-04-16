@@ -26,7 +26,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.26.x' # Match the version from our Dockerfile and host
+        go-version: '1.24.x' # DOWNGRADED: Matches the linter's max supported SDK
         # This caches downloaded modules, speeding up future runs
         cache-dependency-path: backend/go.mod
 
