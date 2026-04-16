@@ -37,8 +37,7 @@ jobs:
       with:
         version: latest
         working-directory: backend
-        # We override the Go version for the linter since it hasn't caught up to 1.26 yet
-        args: --timeout=3m --go=1.24
+        args: --timeout=3m
 
     # 4. Run the Unit Tests
     - name: Run Unit Tests
