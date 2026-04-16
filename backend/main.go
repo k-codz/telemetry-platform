@@ -53,7 +53,7 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 	// HTTP 202 Accepted signifies the request has been accepted for processing,
 	// but the processing has not been completed.
 	w.WriteHeader(http.StatusAccepted)
-	w.Write([]byte(`{"status": "accepted"}`))
+	_, _ = w.Write([]byte(`{"status": "accepted"}`))
 }
 
 func main() {
