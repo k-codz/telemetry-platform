@@ -1,18 +1,21 @@
-version: '3.8'
-
 services:
-  dev-workspace:
-    # Using a stable, slim Ubuntu image as our isolated foundation
-    image: ubuntu:22.04
-    container_name: dev-workspace
-    # 'sleep infinity' keeps the container running indefinitely in the background
-    # without needing a long-running web server process to keep it alive yet.
-    command: sleep infinity
-    volumes:
-      # Bind mount: Maps your host's current directory to /workspace in the container.
-      # This allows you to edit code on your host OS using your favorite IDE,
-      # but run and compile the code safely inside the isolated container.
-      - .:/workspace
-    working_dir: /workspace
+  db:
+    # We use Alpine linux tags to keep the image footprint as small as possible
+    image: postgres:15-alpine
+    container_name: telemetry-db
+    restart: always
     environment:
-      - DEBIAN_FRONTEND=noninteractive
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: telemetry
+    ports:
+      # Maps port 5432 on your Windows host to port 5432 in the container
+      - "5432:5432"
+    volumes:
+      # Maps the named volume 'pgdata' to the container's internal storage path
+      # This ensures data survives container destruction
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  # Declares the named volume managed by Docker
+  pgdata:
