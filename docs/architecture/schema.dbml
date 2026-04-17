@@ -1,0 +1,41 @@
+// ==========================================
+// Telemetry Platform - Core Schema
+// ==========================================
+
+Project TelemetryPlatform {
+  database_type: 'PostgreSQL'
+  Note: 'Core relational schema for user management and event ingestion.'
+}
+
+Table users {
+  id uuid [primary key, Note: 'UUID v4 for global uniqueness']
+  username varchar(50) [unique, not null]
+  email varchar(255) [unique, not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+
+  Note: 'Stores registered users/clients who are sending telemetry data.'
+}
+
+Table events {
+  id uuid [primary key]
+  user_id uuid [not null, ref: > users.id]
+  event_type varchar(100) [not null, Note: 'e.g., page_view, button_click, purchase']
+  
+  // JSONB is the magic bullet for telemetry. It allows us to index and query 
+  // arbitrary key-value pairs without changing the schema.
+  payload jsonb [not null, Note: 'The raw, flexible telemetry payload']
+  
+  // We track both when it happened, and when our server received it
+  occurred_at timestamp [not null, Note: 'Client-side timestamp']
+  ingested_at timestamp [default: `CURRENT_TIMESTAMP`, Note: 'Server-side ingestion time']
+
+  Note: 'Append-only ledger of all incoming telemetry events.'
+}
+
+// Creating an index on user_id to speed up analytics queries
+// querying "all events for user X"
+TableGroup analytics_indices {
+  events.user_id
+  events.event_type
+}
