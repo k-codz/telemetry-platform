@@ -1,42 +1,36 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"time"
+
+	// Import the robust pgx connection pool driver
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// TelemetryEvent defines the JSON structure we expect from our clients.
-// The struct tags `json:"..."` map the JSON keys to our Go fields.
 type TelemetryEvent struct {
 	UserID    string `json:"user_id"`
 	EventType string `json:"event_type"`
 	Timestamp string `json:"timestamp"`
 }
 
-// apiHandler acts as the receiver for our HTTP routes.
-// As we advance, we will inject dependencies (like DB connections or Kafka producers) into this struct.
+// apiHandler now holds our thread-safe database connection pool
 type apiHandler struct {
-	// e.g., db *sql.DB
+	db *pgxpool.Pool
 }
 
-// ServeHTTP satisfies the http.Handler interface.
-// Because it's an interface method, we can map this directly to our routes.
 func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
-	// 1. Validate the HTTP Method
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// 2. Decode the JSON payload
-	// We use json.NewDecoder reading directly from the Request Body (an io.Reader).
-	// This streams the data, which is highly memory-efficient for large payloads,
-	// rather than loading the whole payload into a byte slice first.
 	var event TelemetryEvent
 	decoder := json.NewDecoder(r.Body)
-	// We enforce disallowing unknown fields to ensure payload hygiene
 	decoder.DisallowUnknownFields()
 
 	if err := decoder.Decode(&event); err != nil {
@@ -45,34 +39,74 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 3. Process the Event (Simulated)
-	// Currently, we just log it. Later, we will push this to a Kafka topic.
-	log.Printf("[INFO] Received Event | User: %s | Type: %s | Time: %s\n", event.UserID, event.EventType, event.Timestamp)
+	occurredAt, err := time.Parse(time.RFC3339, event.Timestamp)
+	if err != nil {
+		occurredAt = time.Now()
+	}
 
-	// 4. Send the Response
-	// HTTP 202 Accepted signifies the request has been accepted for processing,
-	// but the processing has not been completed.
+	// ==========================================
+	// DATABASE WRITE LOGIC
+	// ==========================================
+	// We only attempt to write if the DB pool is configured (protects our unit tests)
+	if h.db != nil {
+		// Serialize the entire struct to dump into our flexible JSONB column
+		payloadBytes, _ := json.Marshal(event)
+
+		// r.Context() links this query to the HTTP request lifecycle.
+		// Prepared statements ($1, $2) guarantee protection from SQL injection.
+		_, err := h.db.Exec(r.Context(),
+			"INSERT INTO events (user_id, event_type, payload, occurred_at) VALUES ($1, $2, $3, $4)",
+			event.UserID, event.EventType, payloadBytes, occurredAt,
+		)
+
+		if err != nil {
+			log.Printf("[ERROR] Database write failed: %v\n", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	log.Printf("[INFO] Ingested Event | User: %s | Type: %s\n", event.UserID, event.EventType)
+
 	w.WriteHeader(http.StatusAccepted)
 	_, _ = w.Write([]byte(`{"status": "accepted"}`))
 }
 
 func main() {
-	// Initialize our handler wrapper
-	app := &apiHandler{}
+	// 1. Establish Database Connection Pool
+	// In a real environment, this is injected securely via GitHub Actions / Ansible
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		dbURL = "postgres://admin:secretpassword@localhost:5432/telemetry"
+	}
 
-	// Define our routing multiplexer (the router)
+	// Initialize the connection pool with default settings (auto-manages active connections)
+	pool, err := pgxpool.New(context.Background(), dbURL)
+	if err != nil {
+		log.Fatalf("[FATAL] Unable to connect to database: %v\n", err)
+	}
+	defer pool.Close() // Ensure connections are closed gracefully on server shutdown
+
+	// Actively ping the database to guarantee it is online before starting the API
+	if err := pool.Ping(context.Background()); err != nil {
+		log.Fatalf("[FATAL] Database ping failed. Is PostgreSQL running?: %v\n", err)
+	}
+
+	log.Println("[INFO] Successfully connected to PostgreSQL connection pool")
+
+	// Inject the pool into our handler
+	app := &apiHandler{db: pool}
+
+	// 2. Setup HTTP Server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ingest", app.handleIngest)
 
-	// INDUSTRY BEST PRACTICE: Explicit Server Configuration
-	// Never use the bare http.ListenAndServe(":8080", mux) in production.
-	// It lacks timeouts, leaving you vulnerable to Slowloris attacks.
 	server := &http.Server{
 		Addr:         ":8080",
 		Handler:      mux,
-		ReadTimeout:  5 * time.Second,   // Max time to read the request (headers + body)
-		WriteTimeout: 10 * time.Second,  // Max time to write the response
-		IdleTimeout:  120 * time.Second, // Max time for connections using TCP Keep-Alive
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  120 * time.Second,
 	}
 
 	log.Println("[INFO] Starting ingestion API server on :8080")
