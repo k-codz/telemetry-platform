@@ -1,6 +1,6 @@
 module github.com/k-codz/telemetry-platform/backend
 
-go 1.25.0
+go 1.24
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
