@@ -1,6 +1,5 @@
 services:
   db:
-    # We use Alpine linux tags to keep the image footprint as small as possible
     image: postgres:15-alpine
     container_name: telemetry-db
     restart: always
@@ -9,13 +8,19 @@ services:
       POSTGRES_PASSWORD: secretpassword
       POSTGRES_DB: telemetry
     ports:
-      # Maps port 5432 on your Windows host to port 5432 in the container
       - "5432:5432"
     volumes:
-      # Maps the named volume 'pgdata' to the container's internal storage path
-      # This ensures data survives container destruction
       - pgdata:/var/lib/postgresql/data
 
+  # NEW: Redis In-Memory Cache
+  redis:
+    image: redis:7-alpine
+    container_name: telemetry-cache
+    restart: always
+    ports:
+      - "6379:6379"
+    # We do not map a volume here. Cache is ephemeral! 
+    # If the container dies, it safely repopulates from the DB on the next request.
+
 volumes:
-  # Declares the named volume managed by Docker
   pgdata:
