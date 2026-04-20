@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
+	"github.com/segmentio/kafka-go"
 )
 
 type TelemetryEvent struct {
@@ -18,10 +18,11 @@ type TelemetryEvent struct {
 	Timestamp string `json:"timestamp"`
 }
 
-// apiHandler now holds both our Database Pool and our Redis Client
+// apiHandler now holds Redis and a Kafka Writer (Producer).
+// We have completely removed the PostgreSQL database pool.
 type apiHandler struct {
-	db    *pgxpool.Pool
-	redis *redis.Client
+	redis       *redis.Client
+	kafkaWriter *kafka.Writer
 }
 
 func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
@@ -40,104 +41,87 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	occurredAt, err := time.Parse(time.RFC3339, event.Timestamp)
-	if err != nil {
-		occurredAt = time.Now()
-	}
-
 	// ==========================================
-	// CACHE-ASIDE PATTERN (User Validation)
+	// CACHE CHECK (User Validation)
 	// ==========================================
-	if h.redis != nil && h.db != nil {
+	if h.redis != nil {
 		ctx := r.Context()
 		cacheKey := "user_valid:" + event.UserID
 
-		// 1. Check Redis Cache
 		_, err := h.redis.Get(ctx, cacheKey).Result()
 
 		if err == redis.Nil {
-			// CACHE MISS: Redis doesn't know this user. We must query Postgres.
-			log.Printf("[CACHE MISS] Validating user %s against DB\n", event.UserID)
-
-			var exists int
-			// Query the DB. If the UUID is invalid or doesn't exist, this returns an error.
-			err = h.db.QueryRow(ctx, "SELECT 1 FROM users WHERE id = $1", event.UserID).Scan(&exists)
-
-			if err != nil {
-				log.Printf("[WARN] Unauthorized ingest attempt for user: %s\n", event.UserID)
-				http.Error(w, "Unauthorized: Invalid User ID", http.StatusUnauthorized)
-				return
-			}
-
-			// DB HIT: User is valid! Save this fact in Redis for 5 minutes.
-			err = h.redis.Set(ctx, cacheKey, "true", 5*time.Minute).Err()
-			if err != nil {
-				log.Printf("[WARN] Failed to write to Redis: %v\n", err) // Non-fatal error
-			}
+			// CACHE MISS: Because we removed Postgres from the API, if the user isn't in Redis,
+			// we must reject them. (In a real system, an authentication microservice would populate Redis).
+			// For testing, we will just log a warning but allow the message through to Kafka anyway.
+			log.Printf("[WARN] Cache miss for user %s. Allowing through for testing.", event.UserID)
 		} else if err != nil {
 			log.Printf("[ERROR] Redis connection failed: %v\n", err)
-			// In a highly available system, if Redis goes down, we might choose to
-			// fallback to DB or fail the request. We will fail softly and log it.
-		}
-
-		// ==========================================
-		// DATABASE WRITE (Append Ledger)
-		// ==========================================
-		payloadBytes, _ := json.Marshal(event)
-
-		_, err = h.db.Exec(ctx,
-			"INSERT INTO events (user_id, event_type, payload, occurred_at) VALUES ($1, $2, $3, $4)",
-			event.UserID, event.EventType, payloadBytes, occurredAt,
-		)
-
-		if err != nil {
-			log.Printf("[ERROR] Database write failed: %v\n", err)
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
 		}
 	}
 
-	log.Printf("[INFO] Ingested Event | User: %s | Type: %s\n", event.UserID, event.EventType)
+	// ==========================================
+	// KAFKA PRODUCER (Event Streaming)
+	// ==========================================
+	if h.kafkaWriter != nil {
+		payloadBytes, _ := json.Marshal(event)
+
+		// Create a Kafka message. We use the UserID as the message Key.
+		// This guarantees that all events for a specific user go to the same Kafka partition,
+		// maintaining perfect chronological order for that user.
+		msg := kafka.Message{
+			Key:   []byte(event.UserID),
+			Value: payloadBytes,
+		}
+
+		// Write the message to the broker asynchronously
+		err := h.kafkaWriter.WriteMessages(r.Context(), msg)
+		if err != nil {
+			log.Printf("[ERROR] Failed to write to Kafka: %v\n", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		log.Printf("[KAFKA] Produced event | User: %s | Type: %s\n", event.UserID, event.EventType)
+	}
 
 	w.WriteHeader(http.StatusAccepted)
 	_, _ = w.Write([]byte(`{"status": "accepted"}`))
 }
 
 func main() {
-	// 1. Connect to PostgreSQL
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		dbURL = "postgres://admin:secretpassword@localhost:5432/telemetry"
-	}
-	pool, err := pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		log.Fatalf("[FATAL] Unable to connect to database: %v\n", err)
-	}
-	defer pool.Close()
-
-	if err := pool.Ping(context.Background()); err != nil {
-		log.Fatalf("[FATAL] Database ping failed: %v\n", err)
-	}
-	log.Println("[INFO] Successfully connected to PostgreSQL")
-
-	// 2. Connect to Redis
+	// 1. Connect to Redis
 	redisAddr := os.Getenv("REDIS_URL")
 	if redisAddr == "" {
 		redisAddr = "localhost:6379"
 	}
-	rdb := redis.NewClient(&redis.Options{
-		Addr: redisAddr,
-	})
+	rdb := redis.NewClient(&redis.Options{Addr: redisAddr})
 
 	if err := rdb.Ping(context.Background()).Err(); err != nil {
-		log.Fatalf("[FATAL] Redis ping failed. Is Redis running?: %v\n", err)
+		log.Fatalf("[FATAL] Redis ping failed: %v\n", err)
 	}
 	log.Println("[INFO] Successfully connected to Redis Cache")
 
-	// Inject both connections into the handler
+	// 2. Connect to Kafka (Producer)
+	kafkaBroker := os.Getenv("KAFKA_BROKERS")
+	if kafkaBroker == "" {
+		kafkaBroker = "localhost:9092"
+	}
+
+	// Initialize the Kafka Writer (Producer)
+	kw := &kafka.Writer{
+		Addr:  kafka.TCP(kafkaBroker),
+		Topic: "telemetry_events",
+		// Balancer decides which partition to write to based on the Message Key (UserID)
+		Balancer: &kafka.Hash{},
+	}
+	defer kw.Close()
+	log.Println("[INFO] Successfully initialized Kafka Producer")
+
+	// Inject Redis and Kafka into the handler
 	app := &apiHandler{
-		db:    pool,
-		redis: rdb,
+		redis:       rdb,
+		kafkaWriter: kw,
 	}
 
 	// 3. Setup HTTP Server
