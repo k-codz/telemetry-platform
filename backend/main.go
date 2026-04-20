@@ -78,9 +78,6 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 			log.Printf("[ERROR] Redis connection failed: %v\n", err)
 			// In a highly available system, if Redis goes down, we might choose to
 			// fallback to DB or fail the request. We will fail softly and log it.
-		} else {
-			// CACHE HIT: We got the data from RAM! Skip the DB read.
-			// (Silent to avoid log spam, but it is working!)
 		}
 
 		// ==========================================
