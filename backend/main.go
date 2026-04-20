@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	// Import the robust pgx connection pool driver
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
 )
 
 type TelemetryEvent struct {
@@ -18,9 +18,10 @@ type TelemetryEvent struct {
 	Timestamp string `json:"timestamp"`
 }
 
-// apiHandler now holds our thread-safe database connection pool
+// apiHandler now holds both our Database Pool and our Redis Client
 type apiHandler struct {
-	db *pgxpool.Pool
+	db    *pgxpool.Pool
+	redis *redis.Client
 }
 
 func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
@@ -45,16 +46,49 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ==========================================
-	// DATABASE WRITE LOGIC
+	// CACHE-ASIDE PATTERN (User Validation)
 	// ==========================================
-	// We only attempt to write if the DB pool is configured (protects our unit tests)
-	if h.db != nil {
-		// Serialize the entire struct to dump into our flexible JSONB column
+	if h.redis != nil && h.db != nil {
+		ctx := r.Context()
+		cacheKey := "user_valid:" + event.UserID
+
+		// 1. Check Redis Cache
+		_, err := h.redis.Get(ctx, cacheKey).Result()
+
+		if err == redis.Nil {
+			// CACHE MISS: Redis doesn't know this user. We must query Postgres.
+			log.Printf("[CACHE MISS] Validating user %s against DB\n", event.UserID)
+
+			var exists int
+			// Query the DB. If the UUID is invalid or doesn't exist, this returns an error.
+			err = h.db.QueryRow(ctx, "SELECT 1 FROM users WHERE id = $1", event.UserID).Scan(&exists)
+
+			if err != nil {
+				log.Printf("[WARN] Unauthorized ingest attempt for user: %s\n", event.UserID)
+				http.Error(w, "Unauthorized: Invalid User ID", http.StatusUnauthorized)
+				return
+			}
+
+			// DB HIT: User is valid! Save this fact in Redis for 5 minutes.
+			err = h.redis.Set(ctx, cacheKey, "true", 5*time.Minute).Err()
+			if err != nil {
+				log.Printf("[WARN] Failed to write to Redis: %v\n", err) // Non-fatal error
+			}
+		} else if err != nil {
+			log.Printf("[ERROR] Redis connection failed: %v\n", err)
+			// In a highly available system, if Redis goes down, we might choose to
+			// fallback to DB or fail the request. We will fail softly and log it.
+		} else {
+			// CACHE HIT: We got the data from RAM! Skip the DB read.
+			// (Silent to avoid log spam, but it is working!)
+		}
+
+		// ==========================================
+		// DATABASE WRITE (Append Ledger)
+		// ==========================================
 		payloadBytes, _ := json.Marshal(event)
 
-		// r.Context() links this query to the HTTP request lifecycle.
-		// Prepared statements ($1, $2) guarantee protection from SQL injection.
-		_, err := h.db.Exec(r.Context(),
+		_, err = h.db.Exec(ctx,
 			"INSERT INTO events (user_id, event_type, payload, occurred_at) VALUES ($1, $2, $3, $4)",
 			event.UserID, event.EventType, payloadBytes, occurredAt,
 		)
@@ -73,31 +107,43 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// 1. Establish Database Connection Pool
-	// In a real environment, this is injected securely via GitHub Actions / Ansible
+	// 1. Connect to PostgreSQL
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
 		dbURL = "postgres://admin:secretpassword@localhost:5432/telemetry"
 	}
-
-	// Initialize the connection pool with default settings (auto-manages active connections)
 	pool, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("[FATAL] Unable to connect to database: %v\n", err)
 	}
-	defer pool.Close() // Ensure connections are closed gracefully on server shutdown
+	defer pool.Close()
 
-	// Actively ping the database to guarantee it is online before starting the API
 	if err := pool.Ping(context.Background()); err != nil {
-		log.Fatalf("[FATAL] Database ping failed. Is PostgreSQL running?: %v\n", err)
+		log.Fatalf("[FATAL] Database ping failed: %v\n", err)
+	}
+	log.Println("[INFO] Successfully connected to PostgreSQL")
+
+	// 2. Connect to Redis
+	redisAddr := os.Getenv("REDIS_URL")
+	if redisAddr == "" {
+		redisAddr = "localhost:6379"
+	}
+	rdb := redis.NewClient(&redis.Options{
+		Addr: redisAddr,
+	})
+
+	if err := rdb.Ping(context.Background()).Err(); err != nil {
+		log.Fatalf("[FATAL] Redis ping failed. Is Redis running?: %v\n", err)
+	}
+	log.Println("[INFO] Successfully connected to Redis Cache")
+
+	// Inject both connections into the handler
+	app := &apiHandler{
+		db:    pool,
+		redis: rdb,
 	}
 
-	log.Println("[INFO] Successfully connected to PostgreSQL connection pool")
-
-	// Inject the pool into our handler
-	app := &apiHandler{db: pool}
-
-	// 2. Setup HTTP Server
+	// 3. Setup HTTP Server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ingest", app.handleIngest)
 
