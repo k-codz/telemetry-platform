@@ -1,0 +1,21 @@
+# kind-config.yaml
+# This tells Kind to map the K8s node ports to your Windows host ports
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  # Map K8s port 80 to Windows localhost:80
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  # Map K8s port 443 to Windows localhost:443
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP

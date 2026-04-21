@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: telemetry-ingress
+  annotations:
+    # Tell K8s to use the NGINX controller we installed in Step 2
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      # Any traffic hitting the root path `/` on localhost will be routed...
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            # ...to our telemetry-api-service on port 80!
+            name: telemetry-api-service
+            port:
+              number: 80
