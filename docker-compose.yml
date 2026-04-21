@@ -1,24 +1,4 @@
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: telemetry-db
-    restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secretpassword
-      POSTGRES_DB: telemetry
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  redis:
-    image: redis:7-alpine
-    container_name: telemetry-cache
-    restart: always
-    ports:
-      - "6379:6379"
-
   # NEW: Apache Kafka (Official Image - KRaft mode)
   kafka:
     image: apache/kafka:latest
@@ -38,6 +18,3 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-
-volumes:
-  pgdata:
