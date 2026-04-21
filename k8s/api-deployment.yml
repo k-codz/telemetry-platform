@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-api
+  labels:
+    app: telemetry-api
+spec:
+  # We are declaring we want 2 identical instances of our API running
+  replicas: 2
+  selector:
+    matchLabels:
+      app: telemetry-api
+  template:
+    metadata:
+      labels:
+        app: telemetry-api
+    spec:
+      containers:
+      - name: api
+        image: telemetry-api:local
+        # Forces K8s to use the local image we sideloaded instead of checking DockerHub
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        # Route traffic out of the K8s cluster back to your Windows host's docker-compose stack
+        - name: REDIS_URL
+          value: "host.docker.internal:6379"
+        - name: KAFKA_BROKERS
+          value: "host.docker.internal:9092"
