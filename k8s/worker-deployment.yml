@@ -21,7 +21,8 @@ spec:
         image: telemetry-worker:local
         imagePullPolicy: Never
         env:
+        # Changed from host.docker.internal to K8s internal DNS
         - name: DATABASE_URL
-          value: "postgres://admin:secretpassword@host.docker.internal:5432/telemetry"
+          value: "postgres://admin:secretpassword@postgres-service:5432/telemetry"
         - name: KAFKA_BROKERS
           value: "host.docker.internal:9092"

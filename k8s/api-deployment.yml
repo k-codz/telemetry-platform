@@ -23,8 +23,8 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        # Route traffic out of the K8s cluster back to your Windows host's docker-compose stack
+        # Changed from host.docker.internal to K8s internal DNS
         - name: REDIS_URL
-          value: "host.docker.internal:6379"
+          value: "redis-service:6379"
         - name: KAFKA_BROKERS
           value: "host.docker.internal:9092"
