@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: telemetry-api-service
+  labels:
+    app: telemetry-api
+spec:
+  # ClusterIP is the default type. It makes the service only reachable from within the K8s cluster.
+  type: ClusterIP
+  # The selector tells the Service which Pods it should route traffic to.
+  selector:
+    app: telemetry-api
+  ports:
+    - port: 80        # The port the Service listens on internally
+      targetPort: 8080 # The port the actual Go API Pods are listening on
+      protocol: TCP
