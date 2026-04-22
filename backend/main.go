@@ -10,36 +10,53 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/segmentio/kafka-go"
-	
-	// Prometheus metrics libraries
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	// OpenTelemetry Imports
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-// ==========================================
-// PROMETHEUS METRICS DEFINITIONS
-// ==========================================
+// Metrics Definitions (From Project 19)
 var (
-	// Counter: Tracks total HTTP requests broken down by method, path, and HTTP status code
 	httpRequestsTotal = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "http_requests_total",
-			Help: "Total number of HTTP requests processed by the telemetry API",
-		},
+		prometheus.CounterOpts{Name: "http_requests_total", Help: "Total requests"},
 		[]string{"method", "endpoint", "status"},
 	)
-
-	// Histogram: Tracks the latency (duration) of HTTP requests
 	httpRequestDuration = promauto.NewHistogramVec(
-		prometheus.HistogramOpts{
-			Name:    "http_request_duration_seconds",
-			Help:    "Latency of HTTP requests in seconds",
-			Buckets: prometheus.DefBuckets, // Default buckets: 5ms, 10ms, 25ms, 50ms, 100ms, 250ms...
-		},
+		prometheus.HistogramOpts{Name: "http_request_duration_seconds", Help: "Latency"},
 		[]string{"method", "endpoint"},
 	)
 )
+
+// initTracer configures OpenTelemetry to send spans to Jaeger
+func initTracer(serviceName, endpoint string) *sdktrace.TracerProvider {
+	exporter, err := otlptracehttp.New(context.Background(),
+		otlptracehttp.WithEndpoint(endpoint),
+		otlptracehttp.WithInsecure(),
+	)
+	if err != nil {
+		log.Fatalf("Failed to create OTLP exporter: %v", err)
+	}
+	
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithResource(resource.NewWithAttributes(
+			"",
+			attribute.String("service.name", serviceName),
+		)),
+	)
+	otel.SetTracerProvider(tp)
+	// This tells OTel how to inject/extract Trace IDs into network headers
+	otel.SetTextMapPropagator(propagation.TraceContext{})
+	return tp
+}
 
 type TelemetryEvent struct {
 	UserID    string `json:"user_id"`
@@ -53,14 +70,17 @@ type apiHandler struct {
 }
 
 func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
-	// Start the latency timer!
 	start := time.Now()
-	
-	// We use defer to ensure we ALWAYS record the duration, regardless of where the function exits
 	defer func() {
 		duration := time.Since(start).Seconds()
 		httpRequestDuration.WithLabelValues(r.Method, "/ingest").Observe(duration)
 	}()
+
+	// 1. Start an OpenTelemetry Span for the HTTP Request
+	ctx := r.Context()
+	tracer := otel.Tracer("telemetry-api")
+	ctx, span := tracer.Start(ctx, "POST /ingest")
+	defer span.End()
 
 	if r.Method != http.MethodPost {
 		httpRequestsTotal.WithLabelValues(r.Method, "/ingest", "405").Inc()
@@ -71,76 +91,74 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 	var event TelemetryEvent
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-
 	if err := decoder.Decode(&event); err != nil {
-		log.Printf("[ERROR] Failed to decode JSON: %v\n", err)
 		httpRequestsTotal.WithLabelValues(r.Method, "/ingest", "400").Inc()
-		http.Error(w, "Bad Request: Invalid JSON payload", http.StatusBadRequest)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
 
-	// ==========================================
-	// CACHE CHECK (User Validation)
-	// ==========================================
-	if h.redis != nil {
-		ctx := r.Context()
-		cacheKey := "user_valid:" + event.UserID
+	// Add custom attributes to the trace (e.g., the User ID)
+	span.SetAttributes(attribute.String("user.id", event.UserID))
+	span.SetAttributes(attribute.String("event.type", event.EventType))
 
-		_, err := h.redis.Get(ctx, cacheKey).Result()
-		
+	// Cache Check
+	if h.redis != nil {
+		_, err := h.redis.Get(ctx, "user_valid:"+event.UserID).Result()
 		if err == redis.Nil {
-			log.Printf("[WARN] Cache miss for user %s. Allowing through for testing.", event.UserID)
-		} else if err != nil {
-			log.Printf("[ERROR] Redis connection failed: %v\n", err)
+			log.Printf("[WARN] Cache miss for user %s", event.UserID)
 		}
 	}
 
-	// ==========================================
-	// KAFKA PRODUCER (Event Streaming)
-	// ==========================================
+	// Kafka Producer
 	if h.kafkaWriter != nil {
 		payloadBytes, _ := json.Marshal(event)
 
-		msg := kafka.Message{
-			Key:   []byte(event.UserID),
-			Value: payloadBytes,
+		// 2. CONTEXT PROPAGATION
+		// We inject the current Trace ID into a map of strings
+		headers := make(map[string]string)
+		otel.GetTextMapPropagator().Inject(ctx, propagation.MapCarrier(headers))
+		
+		// Convert the map into Kafka-native headers
+		var kafkaHeaders []kafka.Header
+		for k, v := range headers {
+			kafkaHeaders = append(kafkaHeaders, kafka.Header{Key: k, Value: []byte(v)})
 		}
 
-		err := h.kafkaWriter.WriteMessages(r.Context(), msg)
-		if err != nil {
-			log.Printf("[ERROR] Failed to write to Kafka: %v\n", err)
+		msg := kafka.Message{
+			Key:     []byte(event.UserID),
+			Value:   payloadBytes,
+			Headers: kafkaHeaders, // Stamp the message with the Trace ID!
+		}
+
+		if err := h.kafkaWriter.WriteMessages(ctx, msg); err != nil {
+			span.RecordError(err) // Attach the error to the trace graph
 			httpRequestsTotal.WithLabelValues(r.Method, "/ingest", "500").Inc()
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		
-		log.Printf("[KAFKA] Produced event | User: %s | Type: %s\n", event.UserID, event.EventType)
 	}
 
-	// SUCCESS! Record a 202 status metric
 	httpRequestsTotal.WithLabelValues(r.Method, "/ingest", "202").Inc()
 	w.WriteHeader(http.StatusAccepted)
 	_, _ = w.Write([]byte(`{"status": "accepted"}`))
 }
 
 func main() {
-	// 1. Connect to Redis
+	// Initialize Jaeger Tracing
+	jaegerURL := os.Getenv("JAEGER_ENDPOINT")
+	if jaegerURL == "" {
+		jaegerURL = "localhost:4318"
+	}
+	tp := initTracer("telemetry-api", jaegerURL)
+	defer func() { _ = tp.Shutdown(context.Background()) }()
+
+	// Connect Redis & Kafka
 	redisAddr := os.Getenv("REDIS_URL")
-	if redisAddr == "" {
-		redisAddr = "localhost:6379"
-	}
+	if redisAddr == "" { redisAddr = "localhost:6379" }
 	rdb := redis.NewClient(&redis.Options{Addr: redisAddr})
-	
-	if err := rdb.Ping(context.Background()).Err(); err != nil {
-		log.Fatalf("[FATAL] Redis ping failed: %v\n", err)
-	}
 
-	// 2. Connect to Kafka (Producer)
 	kafkaBroker := os.Getenv("KAFKA_BROKERS")
-	if kafkaBroker == "" {
-		kafkaBroker = "localhost:9092"
-	}
-
+	if kafkaBroker == "" { kafkaBroker = "localhost:9092" }
 	kw := &kafka.Writer{
 		Addr:     kafka.TCP(kafkaBroker),
 		Topic:    "telemetry_events",
@@ -148,30 +166,13 @@ func main() {
 	}
 	defer kw.Close()
 
-	app := &apiHandler{
-		redis:       rdb,
-		kafkaWriter: kw,
-	}
+	app := &apiHandler{redis: rdb, kafkaWriter: kw}
 
-	// 3. Setup HTTP Server
 	mux := http.NewServeMux()
-	
-	// Add the ingestion endpoint
 	mux.HandleFunc("/ingest", app.handleIngest)
-	
-	// NEW: Expose the Prometheus metrics endpoint!
 	mux.Handle("/metrics", promhttp.Handler())
 
-	server := &http.Server{
-		Addr:         ":8080",
-		Handler:      mux,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
-	}
-
-	log.Println("[INFO] Starting ingestion API server on :8080 (Metrics on /metrics)")
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatalf("[FATAL] Server crashed: %v\n", err)
-	}
+	server := &http.Server{Addr: ":8080", Handler: mux}
+	log.Println("[INFO] Starting API server on :8080 (Traced via OTel)")
+	server.ListenAndServe()
 }
