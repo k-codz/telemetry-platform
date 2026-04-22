@@ -38,7 +38,7 @@ jobs:
     # 3. Fail Fast: Run the Linter
     # We use golangci-lint, the industry standard meta-linter for Go
     - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v6
+      uses: golangci/golangci-lint-action@v7
       with:
         # UPGRADED: Always pull the newest linter to support modern Go versions
         version: latest
