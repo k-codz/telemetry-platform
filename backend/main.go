@@ -164,7 +164,7 @@ func main() {
 		Topic:    "telemetry_events",
 		Balancer: &kafka.Hash{},
 	}
-	defer kw.Close()
+	defer func() { _ = kw.Close() }()
 
 	app := &apiHandler{redis: rdb, kafkaWriter: kw}
 
@@ -174,5 +174,7 @@ func main() {
 
 	server := &http.Server{Addr: ":8080", Handler: mux}
 	log.Println("[INFO] Starting API server on :8080 (Traced via OTel)")
-	server.ListenAndServe()
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatalf("[FATAL] Server crashed: %v\n", err)
+	}
 }
