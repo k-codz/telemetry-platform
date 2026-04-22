@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
       - name: api
-        image: telemetry-api:local
-        # Forces K8s to use the local image we sideloaded instead of checking DockerHub
+        # UPDATE THIS LINE to use the newly compiled v1.1 image
+        image: telemetry-api:v1.1
         imagePullPolicy: Never
         ports:
         - containerPort: 8080

@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: telemetry-api-monitor
+  labels:
+    # This label tells the Prometheus Operator to pick up this configuration
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: telemetry-api
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 10s # Scrape the custom metrics every 10 seconds
