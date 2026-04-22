@@ -40,10 +40,11 @@ jobs:
     - name: Run golangci-lint
       uses: golangci/golangci-lint-action@v6
       with:
-        # UPGRADED: Explicitly request a modern version of the linter
-        version: v1.64
+        # UPGRADED: Always pull the newest linter to support modern Go versions
+        version: latest
         working-directory: backend
         args: --timeout=3m
+
 
     # 4. Run the Unit Tests
     - name: Run Unit Tests
