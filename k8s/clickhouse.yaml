@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-service
+  labels:
+    app: clickhouse
+spec:
+  ports:
+  # HTTP Port (Used by BI Tools like Grafana/Metabase)
+  - port: 8123
+    name: http
+  # Native TCP Port (Used by internal clients/workers)
+  - port: 9000
+    name: native
+  selector:
+    app: clickhouse
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: clickhouse
+spec:
+  serviceName: "clickhouse-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickhouse
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+    spec:
+      containers:
+      - name: clickhouse
+        # We use the official, highly optimized alpine image
+        image: clickhouse/clickhouse-server:latest-alpine
+        ports:
+        - containerPort: 8123
+        - containerPort: 9000
+        volumeMounts:
+        - name: clickhouse-data
+          mountPath: /var/lib/clickhouse
+  # Request 2GB of persistent disk space from the local machine
+  volumeClaimTemplates:
+  - metadata:
+      name: clickhouse-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi
