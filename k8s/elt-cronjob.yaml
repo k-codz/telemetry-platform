@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: elt-pipeline
+  labels:
+    app: elt-pipeline
+spec:
+  # Schedule: "Minute Hour DayOfMonth Month DayOfWeek"
+  # "*/5 * * * *" means run every 5 minutes.
+  schedule: "*/5 * * * *"
+  # If a job takes longer than 5 minutes, don't start the next one concurrently
+  concurrencyPolicy: Forbid
+  # Keep a history of the last 3 successful runs and 1 failed run for debugging
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: elt-pipeline
+        spec:
+          containers:
+          - name: elt-job
+            # UPDATE THIS TO v1.1
+            image: elt-pipeline:v1.1
+            imagePullPolicy: Never
+            env:
+            # Overriding the Python defaults with Kubernetes Internal DNS!
+            - name: POSTGRES_URL
+              value: "postgresql://admin:secretpassword@postgres-service:5432/telemetry"
+            - name: CLICKHOUSE_HOST
+              value: "clickhouse-service"
+            - name: CLICKHOUSE_PORT
+              value: "8123"
+            # NEW: Inject the K8s Secret into the Pipeline
+            - name: CLICKHOUSE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: username
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+          # Data pipelines should not infinitely restart on failure; let it fail so we can fix it
+          restartPolicy: OnFailure

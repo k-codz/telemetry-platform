@@ -34,6 +34,18 @@ spec:
       - name: clickhouse
         # We use the official, highly optimized alpine image
         image: clickhouse/clickhouse-server:latest-alpine
+        env:
+        # NEW: Secure the ClickHouse server using our K8s Secret
+        - name: CLICKHOUSE_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: username
+        - name: CLICKHOUSE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
         ports:
         - containerPort: 8123
         - containerPort: 9000
