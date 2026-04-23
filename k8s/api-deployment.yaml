@@ -18,7 +18,7 @@ spec:
       containers:
       - name: api
         # UPDATE THIS LINE to use the newly compiled v1.1 image
-        image: telemetry-api:v1.1
+        image: telemetry-api:v1.2
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
@@ -28,3 +28,5 @@ spec:
           value: "redis-service:6379"
         - name: KAFKA_BROKERS
           value: "host.docker.internal:9092"
+        - name: JAEGER_ENDPOINT
+          value: "jaeger-service:4318"

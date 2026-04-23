@@ -31,18 +31,20 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.24.x' # DOWNGRADED: Matches the linter's max supported SDK
-        # This caches downloaded modules, speeding up future runs
+        # UPGRADED: Now matching your local machine's modern Go compiler
+        go-version: '1.26.x' 
         cache-dependency-path: backend/go.mod
 
     # 3. Fail Fast: Run the Linter
     # We use golangci-lint, the industry standard meta-linter for Go
     - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v4
+      uses: golangci/golangci-lint-action@v7
       with:
+        # UPGRADED: Always pull the newest linter to support modern Go versions
         version: latest
         working-directory: backend
         args: --timeout=3m
+
 
     # 4. Run the Unit Tests
     - name: Run Unit Tests

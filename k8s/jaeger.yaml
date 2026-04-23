@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  labels:
+    app: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+      - name: jaeger
+        # The all-in-one image includes the UI, collector, and an in-memory database
+        image: jaegertracing/all-in-one:latest
+        env:
+        # Enables the OpenTelemetry (OTLP) receiver
+        - name: COLLECTOR_OTLP_ENABLED
+          value: "true"
+        ports:
+        - containerPort: 16686 # UI Port
+        - containerPort: 4318  # OTLP HTTP Receiver Port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-service
+spec:
+  selector:
+    app: jaeger
+  ports:
+  - name: ui
+    port: 16686
+    targetPort: 16686
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
