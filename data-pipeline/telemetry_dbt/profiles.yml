@@ -1,0 +1,13 @@
+# This file defines the connection strings to your data warehouse.
+telemetry_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      driver: http
+      # host.docker.internal bridges the WSL network to the Windows Host network
+      host: 127.0.0.1
+      port: 8123
+      user: admin
+      password: secretpassword
+      schema: telemetry
