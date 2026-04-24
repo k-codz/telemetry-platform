@@ -1,0 +1,22 @@
+# This file defines the core settings for your dbt project.
+name: 'telemetry_dbt'
+version: '1.0.0'
+config-version: 2
+
+profile: 'telemetry_dbt'
+
+model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  telemetry_dbt:
+    # Everything in the 'staging' folder will be materialized as a View
+    staging:
+      +materialized: view
+    # Everything in the 'marts' folder will be physically written as a Table
+    marts:
+      +materialized: table
+      # ClickHouse requires an engine and sorting key for physical tables
+      +engine: MergeTree()
+      +order_by: ['event_date']

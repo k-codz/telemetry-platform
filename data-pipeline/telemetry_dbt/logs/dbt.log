@@ -1,0 +1,520 @@
+[0m10:41:46.914120 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f878a8b9a90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f878afa3c80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f878b016180>]}
+
+
+============================== 10:41:46.925500 | 64cf4d4f-eb2a-469c-94a3-22393936d7a3 ==============================
+[0m10:41:46.925500 [info ] [MainThread]: Running with dbt=1.11.8
+[0m10:41:46.926695 [debug] [MainThread]: running dbt with arguments {'warn_error': 'None', 'fail_fast': 'False', 'target_path': 'None', 'quiet': 'False', 'indirect_selection': 'eager', 'debug': 'False', 'write_json': 'True', 'partial_parse': 'True', 'use_colors': 'True', 'printer_width': '80', 'version_check': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'introspect': 'True', 'invocation_command': 'dbt debug', 'log_path': 'logs', 'no_print': 'None', 'empty': 'None', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'log_cache_events': 'False', 'log_format': 'default', 'static_parser': 'True', 'profiles_dir': '.'}
+[0m10:41:47.117264 [info ] [MainThread]: dbt version: 1.11.8
+[0m10:41:47.118112 [info ] [MainThread]: python version: 3.12.3
+[0m10:41:47.118847 [info ] [MainThread]: python path: /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/venv-linux/bin/python3
+[0m10:41:47.119650 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m10:41:47.120604 [info ] [MainThread]: Using profiles dir at .
+[0m10:41:47.121371 [info ] [MainThread]: Using profiles.yml file at ./profiles.yml
+[0m10:41:47.122196 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/dbt_project.yml
+[0m10:41:47.123130 [info ] [MainThread]: Configuration:
+[0m10:41:47.123838 [info ] [MainThread]:   profiles.yml file [[31mERROR not found[0m]
+[0m10:41:47.124625 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m10:41:47.125301 [info ] [MainThread]: Required dependencies:
+[0m10:41:47.126029 [debug] [MainThread]: Executing "git --help"
+[0m10:41:47.135896 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:41:47.137177 [debug] [MainThread]: STDERR: "b''"
+[0m10:41:47.138315 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:41:47.139331 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m10:41:47.140448 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m10:41:47.141381 [info ] [MainThread]: dbt looked for a profiles.yml file in ./profiles.yml, but did
+not find one. For more information on configuring your profile, consult the
+documentation:
+
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m10:41:47.142362 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/dbt_project.yml> not found
+
+[0m10:41:47.145693 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.29238373, "process_in_blocks": "15264", "process_kernel_time": 0.8248, "process_mem_max_rss": "101848", "process_out_blocks": "0", "process_user_time": 1.645558}
+[0m10:41:47.146624 [debug] [MainThread]: Command `dbt debug` failed at 10:41:47.146521 after 0.29 seconds
+[0m10:41:47.147424 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f878e5b7320>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f878a195be0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f878a7c66f0>]}
+[0m10:41:47.148228 [debug] [MainThread]: Flushing usage events
+[0m10:41:48.105399 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m10:43:24.382189 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x793271e03f20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x793271e03ce0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x793271e03dd0>]}
+
+
+============================== 10:43:24.392180 | dad19c42-aa8c-461b-b33b-308e4f44cd2d ==============================
+[0m10:43:24.392180 [info ] [MainThread]: Running with dbt=1.11.8
+[0m10:43:24.393222 [debug] [MainThread]: running dbt with arguments {'introspect': 'True', 'log_path': '/mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/logs', 'send_anonymous_usage_stats': 'True', 'printer_width': '80', 'profiles_dir': '.', 'log_cache_events': 'False', 'quiet': 'False', 'log_format': 'default', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'no_print': 'None', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'debug': 'False', 'empty': 'None', 'warn_error': 'None', 'indirect_selection': 'eager', 'invocation_command': 'dbt debug', 'partial_parse': 'True', 'fail_fast': 'False', 'write_json': 'True', 'version_check': 'True', 'use_colors': 'True', 'static_parser': 'True'}
+[0m10:43:24.598530 [info ] [MainThread]: dbt version: 1.11.8
+[0m10:43:24.599403 [info ] [MainThread]: python version: 3.12.3
+[0m10:43:24.600144 [info ] [MainThread]: python path: /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/venv-linux/bin/python3
+[0m10:43:24.601157 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m10:43:24.602312 [info ] [MainThread]: Using profiles dir at .
+[0m10:43:24.603240 [info ] [MainThread]: Using profiles.yml file at ./profiles.yml
+[0m10:43:24.604110 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/dbt_project.yml
+[0m10:43:24.711992 [info ] [MainThread]: Configuration:
+[0m10:43:24.713204 [info ] [MainThread]:   profiles.yml file [[31mERROR not found[0m]
+[0m10:43:24.714366 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m10:43:24.715355 [info ] [MainThread]: Required dependencies:
+[0m10:43:24.716410 [debug] [MainThread]: Executing "git --help"
+[0m10:43:24.720359 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:43:24.721488 [debug] [MainThread]: STDERR: "b''"
+[0m10:43:24.722479 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:43:24.723440 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m10:43:24.724386 [info ] [MainThread]: [31m1 check failed:[0m
+[0m10:43:24.725420 [info ] [MainThread]: dbt looked for a profiles.yml file in ./profiles.yml, but did
+not find one. For more information on configuring your profile, consult the
+documentation:
+
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m10:43:24.728389 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.4193982, "process_in_blocks": "10008", "process_kernel_time": 0.770851, "process_mem_max_rss": "104172", "process_out_blocks": "0", "process_user_time": 1.741707}
+[0m10:43:24.729486 [debug] [MainThread]: Command `dbt debug` failed at 10:43:24.729377 after 0.42 seconds
+[0m10:43:24.730545 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x793271d3c260>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x793271e40890>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x793271e405f0>]}
+[0m10:43:24.731434 [debug] [MainThread]: Flushing usage events
+[0m10:43:25.608269 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m10:44:23.374882 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a7358abad20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a735636c9b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a7356a76330>]}
+
+
+============================== 10:44:23.385302 | 807af218-85d5-4986-ab13-c6e00b545e6a ==============================
+[0m10:44:23.385302 [info ] [MainThread]: Running with dbt=1.11.8
+[0m10:44:23.386501 [debug] [MainThread]: running dbt with arguments {'introspect': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'no_print': 'None', 'use_colors': 'True', 'invocation_command': 'dbt debug', 'partial_parse': 'True', 'log_cache_events': 'False', 'quiet': 'False', 'cache_selected_only': 'False', 'profiles_dir': '.', 'log_format': 'default', 'target_path': 'None', 'version_check': 'True', 'static_parser': 'True', 'write_json': 'True', 'warn_error': 'None', 'debug': 'False', 'printer_width': '80', 'fail_fast': 'False', 'log_path': '/mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/logs', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'send_anonymous_usage_stats': 'True', 'empty': 'None'}
+[0m10:44:23.581233 [info ] [MainThread]: dbt version: 1.11.8
+[0m10:44:23.582224 [info ] [MainThread]: python version: 3.12.3
+[0m10:44:23.583111 [info ] [MainThread]: python path: /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/venv-linux/bin/python3
+[0m10:44:23.584002 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m10:44:23.806674 [info ] [MainThread]: Using profiles dir at .
+[0m10:44:23.808075 [info ] [MainThread]: Using profiles.yml file at ./profiles.yml
+[0m10:44:23.809300 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/dbt_project.yml
+[0m10:44:23.819384 [info ] [MainThread]: adapter type: clickhouse
+[0m10:44:23.820186 [info ] [MainThread]: adapter version: 1.10.0
+[0m10:44:23.919857 [info ] [MainThread]: Configuration:
+[0m10:44:23.921149 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m10:44:23.922455 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m10:44:23.923804 [info ] [MainThread]: Required dependencies:
+[0m10:44:23.924903 [debug] [MainThread]: Executing "git --help"
+[0m10:44:23.927840 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:44:23.928959 [debug] [MainThread]: STDERR: "b''"
+[0m10:44:23.929822 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:44:23.930861 [info ] [MainThread]: Connection:
+[0m10:44:23.931763 [info ] [MainThread]:   driver: http
+[0m10:44:23.932954 [info ] [MainThread]:   host: host.docker.internal
+[0m10:44:23.934192 [info ] [MainThread]:   port: 8123
+[0m10:44:23.935341 [info ] [MainThread]:   user: admin
+[0m10:44:23.936263 [info ] [MainThread]:   schema: telemetry
+[0m10:44:23.937250 [info ] [MainThread]:   retries: 1
+[0m10:44:23.938223 [info ] [MainThread]:   cluster: None
+[0m10:44:23.939252 [info ] [MainThread]:   database_engine: None
+[0m10:44:23.940127 [info ] [MainThread]:   cluster_mode: False
+[0m10:44:23.940879 [info ] [MainThread]:   secure: False
+[0m10:44:23.941678 [info ] [MainThread]:   verify: True
+[0m10:44:23.942514 [info ] [MainThread]:   client_cert: None
+[0m10:44:23.943359 [info ] [MainThread]:   client_cert_key: None
+[0m10:44:23.944341 [info ] [MainThread]:   connect_timeout: 10
+[0m10:44:23.945361 [info ] [MainThread]:   send_receive_timeout: 300
+[0m10:44:23.946398 [info ] [MainThread]:   sync_request_timeout: 5
+[0m10:44:23.947326 [info ] [MainThread]:   compress_block_size: 1048576
+[0m10:44:23.948137 [info ] [MainThread]:   compression: 
+[0m10:44:23.949331 [info ] [MainThread]:   check_exchange: True
+[0m10:44:23.950618 [info ] [MainThread]:   custom_settings: None
+[0m10:44:23.951514 [info ] [MainThread]:   use_lw_deletes: False
+[0m10:44:23.952497 [info ] [MainThread]:   allow_automatic_deduplication: False
+[0m10:44:23.953391 [info ] [MainThread]:   tcp_keepalive: False
+[0m10:44:23.955852 [info ] [MainThread]: Registered adapter: clickhouse=1.10.0
+[0m10:44:31.437610 [debug] [MainThread]: Acquiring new clickhouse connection 'debug'
+[0m10:44:31.438393 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m10:44:39.854805 [debug] [MainThread]: dbt_clickhouse adapter: Got a retryable error when attempting to open a clickhouse connection.
+1 attempts remaining. Retrying in 1 seconds.
+Error:
+Error HTTPConnectionPool(host='host.docker.internal', port=8123): Max retries exceeded with url: /?query_id=24231719-3ef5-4289-9ff9-b3a1b4dd8bd8 (Caused by NewConnectionError("HTTPConnection(host='host.docker.internal', port=8123): Failed to establish a new connection: [Errno 113] No route to host")) executing HTTP request attempt 1 (http://host.docker.internal:8123)
+[0m10:44:46.851223 [info ] [MainThread]:   Connection test: [[31mERROR[0m]
+
+[0m10:44:46.852784 [info ] [MainThread]: [31m1 check failed:[0m
+[0m10:44:46.854239 [info ] [MainThread]: dbt was unable to connect to the specified database.
+The database returned the following error:
+
+  >Database Error
+  Error HTTPConnectionPool(host='host.docker.internal', port=8123): Max retries exceeded with url: /?query_id=886c3faf-775d-441b-88aa-446a83d80fc0 (Caused by NewConnectionError("HTTPConnection(host='host.docker.internal', port=8123): Failed to establish a new connection: [Errno 113] No route to host")) executing HTTP request attempt 1 (http://host.docker.internal:8123)
+
+Check your database credentials and try again. For more information, visit:
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m10:44:46.857691 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 23.559488, "process_in_blocks": "11352", "process_kernel_time": 1.591847, "process_mem_max_rss": "108252", "process_out_blocks": "0", "process_user_time": 2.060557}
+[0m10:44:46.859063 [debug] [MainThread]: Command `dbt debug` failed at 10:44:46.858943 after 23.56 seconds
+[0m10:44:46.860125 [debug] [MainThread]: Connection 'debug' was left open.
+[0m10:44:46.861162 [debug] [MainThread]: On debug: No close available on handle
+[0m10:44:46.862181 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a735622b530>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a7355c28da0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7a7355949910>]}
+[0m10:44:46.863080 [debug] [MainThread]: Flushing usage events
+[0m10:44:47.726786 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:00:19.365177 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7eea40a0a900>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7eea40b679b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7eea41fb3650>]}
+
+
+============================== 11:00:19.376171 | c33a2546-c3be-438d-b648-5ba5b1ff5a6c ==============================
+[0m11:00:19.376171 [info ] [MainThread]: Running with dbt=1.11.8
+[0m11:00:19.377241 [debug] [MainThread]: running dbt with arguments {'write_json': 'True', 'debug': 'False', 'fail_fast': 'False', 'use_colors': 'True', 'log_format': 'default', 'partial_parse': 'True', 'printer_width': '80', 'static_parser': 'True', 'empty': 'None', 'target_path': 'None', 'version_check': 'True', 'invocation_command': 'dbt debug', 'warn_error': 'None', 'profiles_dir': '.', 'indirect_selection': 'eager', 'introspect': 'True', 'log_path': '/mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/logs', 'log_cache_events': 'False', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'no_print': 'None', 'use_experimental_parser': 'False', 'cache_selected_only': 'False'}
+[0m11:00:19.576401 [info ] [MainThread]: dbt version: 1.11.8
+[0m11:00:19.577539 [info ] [MainThread]: python version: 3.12.3
+[0m11:00:19.578483 [info ] [MainThread]: python path: /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/venv-linux/bin/python3
+[0m11:00:19.579350 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m11:00:19.806969 [info ] [MainThread]: Using profiles dir at .
+[0m11:00:19.808441 [info ] [MainThread]: Using profiles.yml file at ./profiles.yml
+[0m11:00:19.809636 [info ] [MainThread]: Using dbt_project.yml file at /mnt/c/Users/Kei/MyProjects/telemetry-platform/data-pipeline/telemetry_dbt/dbt_project.yml
+[0m11:00:19.821761 [info ] [MainThread]: adapter type: clickhouse
+[0m11:00:19.822912 [info ] [MainThread]: adapter version: 1.10.0
+[0m11:00:19.925514 [info ] [MainThread]: Configuration:
+[0m11:00:19.926692 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m11:00:19.927800 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m11:00:19.928746 [info ] [MainThread]: Required dependencies:
+[0m11:00:19.929769 [debug] [MainThread]: Executing "git --help"
+[0m11:00:19.933532 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m11:00:19.934693 [debug] [MainThread]: STDERR: "b''"
+[0m11:00:19.935662 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m11:00:19.936857 [info ] [MainThread]: Connection:
+[0m11:00:19.937867 [info ] [MainThread]:   driver: http
+[0m11:00:19.938857 [info ] [MainThread]:   host: 127.0.0.1
+[0m11:00:19.939675 [info ] [MainThread]:   port: 8123
+[0m11:00:19.940648 [info ] [MainThread]:   user: admin
+[0m11:00:19.941701 [info ] [MainThread]:   schema: telemetry
+[0m11:00:19.942793 [info ] [MainThread]:   retries: 1
+[0m11:00:19.943806 [info ] [MainThread]:   cluster: None
+[0m11:00:19.944656 [info ] [MainThread]:   database_engine: None
+[0m11:00:19.945481 [info ] [MainThread]:   cluster_mode: False
+[0m11:00:19.946423 [info ] [MainThread]:   secure: False
+[0m11:00:19.947348 [info ] [MainThread]:   verify: True
+[0m11:00:19.948647 [info ] [MainThread]:   client_cert: None
+[0m11:00:19.949665 [info ] [MainThread]:   client_cert_key: None
+[0m11:00:19.950689 [info ] [MainThread]:   connect_timeout: 10
+[0m11:00:19.951995 [info ] [MainThread]:   send_receive_timeout: 300
+[0m11:00:19.953159 [info ] [MainThread]:   sync_request_timeout: 5
+[0m11:00:19.954351 [info ] [MainThread]:   compress_block_size: 1048576
+[0m11:00:19.955349 [info ] [MainThread]:   compression: 
+[0m11:00:19.956471 [info ] [MainThread]:   check_exchange: True
+[0m11:00:19.957347 [info ] [MainThread]:   custom_settings: None
+[0m11:00:19.958420 [info ] [MainThread]:   use_lw_deletes: False
+[0m11:00:19.959364 [info ] [MainThread]:   allow_automatic_deduplication: False
+[0m11:00:19.960336 [info ] [MainThread]:   tcp_keepalive: False
+[0m11:00:19.963175 [info ] [MainThread]: Registered adapter: clickhouse=1.10.0
+[0m11:00:27.323957 [debug] [MainThread]: Acquiring new clickhouse connection 'debug'
+[0m11:00:27.324862 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m11:00:30.060893 [debug] [MainThread]: dbt_clickhouse adapter: Got a retryable error when attempting to open a clickhouse connection.
+1 attempts remaining. Retrying in 1 seconds.
+Error:
+Error HTTPConnectionPool(host='127.0.0.1', port=8123): Max retries exceeded with url: /?query_id=75c69111-1cba-4d7d-add3-6a78c490358f (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=8123): Failed to establish a new connection: [Errno 111] Connection refused")) executing HTTP request attempt 1 (http://127.0.0.1:8123)
+[0m11:00:31.064273 [info ] [MainThread]:   Connection test: [[31mERROR[0m]
+
+[0m11:00:31.066904 [info ] [MainThread]: [31m1 check failed:[0m
+[0m11:00:31.069428 [info ] [MainThread]: dbt was unable to connect to the specified database.
+The database returned the following error:
+
+  >Database Error
+  Error HTTPConnectionPool(host='127.0.0.1', port=8123): Max retries exceeded with url: /?query_id=930045e2-d5ba-4fdc-b0be-b66238619abb (Caused by NewConnectionError("HTTPConnection(host='127.0.0.1', port=8123): Failed to establish a new connection: [Errno 111] Connection refused")) executing HTTP request attempt 1 (http://127.0.0.1:8123)
+
+Check your database credentials and try again. For more information, visit:
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m11:00:31.077907 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 11.792649, "process_in_blocks": "11184", "process_kernel_time": 1.521149, "process_mem_max_rss": "108016", "process_out_blocks": "0", "process_user_time": 2.107239}
+[0m11:00:31.081097 [debug] [MainThread]: Command `dbt debug` failed at 11:00:31.080769 after 11.80 seconds
+[0m11:00:31.083001 [debug] [MainThread]: Connection 'debug' was left open.
+[0m11:00:31.084830 [debug] [MainThread]: On debug: No close available on handle
+[0m11:00:31.086733 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7eea40b679b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7eea409cb650>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7eea3ffda690>]}
+[0m11:00:31.088535 [debug] [MainThread]: Flushing usage events
+[0m11:00:31.995950 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m14:46:39.677709 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000253C67390A0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000253C3B6D070>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000253C27513D0>]}
+
+
+============================== 14:46:39.684740 | 315a2407-0644-4e46-83d0-0fe0ed26ca15 ==============================
+[0m14:46:39.684740 [info ] [MainThread]: Running with dbt=1.11.8
+[0m14:46:39.685714 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'printer_width': '80', 'write_json': 'True', 'introspect': 'True', 'log_cache_events': 'False', 'empty': 'None', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\Kei\\MyProjects\\telemetry-platform\\data-pipeline\\telemetry_dbt', 'indirect_selection': 'eager', 'use_colors': 'True', 'invocation_command': 'dbt debug', 'use_experimental_parser': 'False', 'log_path': 'C:\\Users\\Kei\\MyProjects\\telemetry-platform\\data-pipeline\\telemetry_dbt\\logs'}
+[0m14:46:39.699437 [info ] [MainThread]: dbt version: 1.11.8
+[0m14:46:39.699437 [info ] [MainThread]: python version: 3.12.10
+[0m14:46:39.699437 [info ] [MainThread]: python path: C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\venv\Scripts\python.exe
+[0m14:46:39.700438 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m14:46:39.762662 [info ] [MainThread]: Using profiles dir at C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt
+[0m14:46:39.763195 [info ] [MainThread]: Using profiles.yml file at C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\profiles.yml
+[0m14:46:39.763195 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\dbt_project.yml
+[0m14:46:39.764368 [info ] [MainThread]: adapter type: clickhouse
+[0m14:46:39.764928 [info ] [MainThread]: adapter version: 1.10.0
+[0m14:46:39.874476 [info ] [MainThread]: Configuration:
+[0m14:46:39.874993 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m14:46:39.874993 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m14:46:39.875596 [info ] [MainThread]: Required dependencies:
+[0m14:46:39.876151 [debug] [MainThread]: Executing "git --help"
+[0m14:46:39.916438 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Set `HEAD` or the index to a known state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m14:46:39.916438 [debug] [MainThread]: STDERR: "b''"
+[0m14:46:39.917164 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m14:46:39.917626 [info ] [MainThread]: Connection:
+[0m14:46:39.917626 [info ] [MainThread]:   driver: http
+[0m14:46:39.918596 [info ] [MainThread]:   host: 127.0.0.1
+[0m14:46:39.918596 [info ] [MainThread]:   port: 8123
+[0m14:46:39.918596 [info ] [MainThread]:   user: admin
+[0m14:46:39.919627 [info ] [MainThread]:   schema: telemetry
+[0m14:46:39.919627 [info ] [MainThread]:   retries: 1
+[0m14:46:39.920596 [info ] [MainThread]:   cluster: None
+[0m14:46:39.920596 [info ] [MainThread]:   database_engine: None
+[0m14:46:39.920596 [info ] [MainThread]:   cluster_mode: False
+[0m14:46:39.921628 [info ] [MainThread]:   secure: False
+[0m14:46:39.921628 [info ] [MainThread]:   verify: True
+[0m14:46:39.921628 [info ] [MainThread]:   client_cert: None
+[0m14:46:39.922596 [info ] [MainThread]:   client_cert_key: None
+[0m14:46:39.922596 [info ] [MainThread]:   connect_timeout: 10
+[0m14:46:39.922596 [info ] [MainThread]:   send_receive_timeout: 300
+[0m14:46:39.923596 [info ] [MainThread]:   sync_request_timeout: 5
+[0m14:46:39.923596 [info ] [MainThread]:   compress_block_size: 1048576
+[0m14:46:39.923596 [info ] [MainThread]:   compression: 
+[0m14:46:39.923596 [info ] [MainThread]:   check_exchange: True
+[0m14:46:39.925101 [info ] [MainThread]:   custom_settings: None
+[0m14:46:39.925101 [info ] [MainThread]:   use_lw_deletes: False
+[0m14:46:39.925101 [info ] [MainThread]:   allow_automatic_deduplication: False
+[0m14:46:39.926108 [info ] [MainThread]:   tcp_keepalive: False
+[0m14:46:39.926108 [info ] [MainThread]: Registered adapter: clickhouse=1.10.0
+[0m14:46:40.183822 [debug] [MainThread]: Acquiring new clickhouse connection 'debug'
+[0m14:46:40.184854 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m14:46:41.530756 [debug] [MainThread]: dbt_clickhouse adapter: On debug: select 1 as id...
+[0m14:46:41.535658 [debug] [MainThread]: dbt_clickhouse adapter: SQL status: OK in 0.00 seconds
+[0m14:46:41.547253 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m14:46:41.549043 [info ] [MainThread]: [32mAll checks passed![0m
+[0m14:46:41.549043 [debug] [MainThread]: Command `python -m dbt.cli.main debug` succeeded at 14:46:41.549043 after 1.99 seconds
+[0m14:46:41.549043 [debug] [MainThread]: Connection 'debug' was left open.
+[0m14:46:41.550556 [debug] [MainThread]: On debug: Close
+[0m14:46:41.551192 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000253C2AA5010>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000253C7DA2CC0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000253C7EE12B0>]}
+[0m14:46:41.551192 [debug] [MainThread]: Flushing usage events
+[0m14:46:42.724334 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m14:47:47.606663 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE67D8920>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE6731A90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE66CBF50>]}
+
+
+============================== 14:47:47.610924 | 34ca9920-90d1-4a58-86ef-74e16eea9b8b ==============================
+[0m14:47:47.610924 [info ] [MainThread]: Running with dbt=1.11.8
+[0m14:47:47.611428 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': 'C:\\Users\\Kei\\MyProjects\\telemetry-platform\\data-pipeline\\telemetry_dbt', 'use_colors': 'True', 'invocation_command': 'dbt run', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'log_path': 'C:\\Users\\Kei\\MyProjects\\telemetry-platform\\data-pipeline\\telemetry_dbt\\logs'}
+[0m14:47:47.788410 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE8244050>]}
+[0m14:47:47.848631 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE6A99DF0>]}
+[0m14:47:47.849632 [info ] [MainThread]: Registered adapter: clickhouse=1.10.0
+[0m14:47:48.120959 [debug] [MainThread]: checksum: 7d524ac048c2100769df89d592e662e060a73ca564e31bd9c2a37efdfe8d8ab6, vars: {}, profile: , target: , version: 1.11.8
+[0m14:47:48.121960 [info ] [MainThread]: Unable to do partial parsing because saved manifest not found. Starting full parse.
+[0m14:47:48.122960 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE838D190>]}
+[0m14:47:49.327858 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE3AF5340>]}
+[0m14:47:49.388446 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\target\manifest.json
+[0m14:47:49.390435 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\target\semantic_manifest.json
+[0m14:47:49.406821 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE87FD1F0>]}
+[0m14:47:49.406821 [info ] [MainThread]: Found 2 models, 523 macros
+[0m14:47:49.407821 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE880C920>]}
+[0m14:47:49.408820 [info ] [MainThread]: 
+[0m14:47:49.409885 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m14:47:49.409885 [info ] [MainThread]: 
+[0m14:47:49.410925 [debug] [MainThread]: Acquiring new clickhouse connection 'master'
+[0m14:47:49.416306 [debug] [ThreadPool]: Acquiring new clickhouse connection 'list_'
+[0m14:47:49.425337 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:47:51.208899 [debug] [ThreadPool]: dbt_clickhouse adapter: On list_: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "telemetry_dbt", "target_name": "dev", "connection_name": "list_"} */
+
+    select name from system.databases
+  ...
+[0m14:47:51.213945 [debug] [ThreadPool]: dbt_clickhouse adapter: SQL status: OK in 0.00 seconds
+[0m14:47:51.226333 [debug] [ThreadPool]: Acquiring new clickhouse connection 'list__telemetry'
+[0m14:47:51.232913 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m14:47:51.292155 [debug] [ThreadPool]: dbt_clickhouse adapter: On list__telemetry: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "telemetry_dbt", "target_name": "dev", "connection_name": "list__telemetry"} */
+with mv_sources as (
+      -- Find all MVs and their target tables (database and name of the MV, plus the SELECT SQL)
+      select
+        name as mv_name,
+        database as mv_database,
+        any(as_select) as mv_sql,
+        any(replaceRegexpOne(create_table_query, '.*TO\\s+`?([^`\\s(]+)`?\\.`?([^`\\s(]+)`?.*', '\\1.\\2')) as target_fqn
+      
+      from system.tables
+      
+      where engine = 'MaterializedView'
+        and create_table_query like '%TO %'
+      group by mv_name, mv_database
+    )
+    select
+      t.name as name,
+      t.database as schema,
+      multiIf(
+        t.engine = 'MaterializedView', 'materialized_view',
+        t.engine = 'View', 'view',
+        t.engine = 'Dictionary', 'dictionary',
+        'table'
+      ) as type,
+      db.engine as db_engine,
+      groupArrayIf(
+        map('schema', mv_sources.mv_database, 'name', mv_sources.mv_name, 'sql', mv_sources.mv_sql),
+        mv_sources.mv_name != ''
+      ) as mvs_pointing_to_it,0 as is_on_cluster
+        from system.tables as t
+      
+        join system.databases as db on t.database = db.name
+        left join mv_sources on mv_sources.target_fqn = concat(t.database, '.', t.name)
+      where schema = 'telemetry'
+      group by name, schema, type, db_engine
+
+  ...
+[0m14:47:51.340847 [debug] [ThreadPool]: dbt_clickhouse adapter: SQL status: OK in 0.05 seconds
+[0m14:47:51.342704 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE838E9C0>]}
+[0m14:47:51.347812 [debug] [Thread-1 (]: Began running node model.telemetry_dbt.stg_events
+[0m14:47:51.348362 [info ] [Thread-1 (]: 1 of 2 START sql view model `telemetry`.`stg_events` ........................... [RUN]
+[0m14:47:51.348905 [debug] [Thread-1 (]: Acquiring new clickhouse connection 'model.telemetry_dbt.stg_events'
+[0m14:47:51.349448 [debug] [Thread-1 (]: Began compiling node model.telemetry_dbt.stg_events
+[0m14:47:51.355076 [debug] [Thread-1 (]: Writing injected SQL for node "model.telemetry_dbt.stg_events"
+[0m14:47:51.356077 [debug] [Thread-1 (]: Began executing node model.telemetry_dbt.stg_events
+[0m14:47:51.369375 [debug] [Thread-1 (]: Creating new relation stg_events
+[0m14:47:51.382627 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m14:47:51.437839 [debug] [Thread-1 (]: Writing runtime sql for node "model.telemetry_dbt.stg_events"
+[0m14:47:51.439486 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.telemetry_dbt.stg_events: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "telemetry_dbt", "target_name": "dev", "node_id": "model.telemetry_dbt.stg_events"} */
+
+
+  create or replace view `telemetry`.`stg_events` 
+  
+    
+  
+  
+    
+    
+  as (
+    -- The Staging layer is responsible for basic clean up and standardizing names.
+-- It does NOT do heavy aggregations.
+
+SELECT
+    user_id,
+    event_type,
+    occurred_at,
+    -- Extract the Date component for easier grouping downstream
+    toDate(occurred_at) AS event_date,
+    -- In ClickHouse, we can use JSON functions to safely extract data from the raw payload
+    JSONExtractString(payload, 'test') AS is_test_event
+FROM telemetry.events_analytical
+    
+  )
+      
+      
+                    -- end_of_sql
+                    
+                    ...
+[0m14:47:51.448136 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.01 seconds
+[0m14:47:51.465555 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE8CD6E40>]}
+[0m14:47:51.466807 [info ] [Thread-1 (]: 1 of 2 OK created sql view model `telemetry`.`stg_events` ...................... [[32mOK[0m in 0.12s]
+[0m14:47:51.466807 [debug] [Thread-1 (]: Finished running node model.telemetry_dbt.stg_events
+[0m14:47:51.467780 [debug] [Thread-1 (]: Began running node model.telemetry_dbt.daily_event_summary
+[0m14:47:51.468782 [info ] [Thread-1 (]: 2 of 2 START sql table model `telemetry`.`daily_event_summary` ................. [RUN]
+[0m14:47:51.468782 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.telemetry_dbt.stg_events, now model.telemetry_dbt.daily_event_summary)
+[0m14:47:51.469784 [debug] [Thread-1 (]: Began compiling node model.telemetry_dbt.daily_event_summary
+[0m14:47:51.472812 [debug] [Thread-1 (]: Writing injected SQL for node "model.telemetry_dbt.daily_event_summary"
+[0m14:47:51.473780 [debug] [Thread-1 (]: Began executing node model.telemetry_dbt.daily_event_summary
+[0m14:47:51.502412 [debug] [Thread-1 (]: Creating new relation daily_event_summary
+[0m14:47:51.528310 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.telemetry_dbt.daily_event_summary: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "telemetry_dbt", "target_name": "dev", "node_id": "model.telemetry_dbt.daily_event_summary"} */
+
+            
+
+    
+        create table `telemetry`.`daily_event_summary`
+        
+  
+        
+  engine = MergeTree()
+        order by (event_date)
+        
+        
+        
+        
+                    -- end_of_sql
+                    SETTINGS replicated_deduplication_window='0'
+
+                    
+            empty
+          as (
+            -- The Marts layer combines staging models and runs heavy aggregations
+-- to provide clean, ready-to-use data for business dashboards.
+
+-- Notice the ref() function! dbt automatically knows it must run stg_events first.
+WITH staging_events AS (
+    SELECT * FROM `telemetry`.`stg_events`
+)
+
+SELECT
+    event_date,
+    event_type,
+    COUNT(user_id) AS total_events,
+    -- countDistinct is highly optimized in ClickHouse for finding Unique Users
+    countDistinct(user_id) AS unique_users
+FROM staging_events
+GROUP BY
+    event_date,
+    event_type
+          )
+        
+        ...
+[0m14:47:51.542215 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.01 seconds
+[0m14:47:51.558684 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.telemetry_dbt.daily_event_summary: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "telemetry_dbt", "target_name": "dev", "node_id": "model.telemetry_dbt.daily_event_summary"} */
+
+    select name, type from system.columns where table = 'daily_event_summary'
+    
+      
+        and database = 'telemetry'
+      
+    
+    order by position
+  ...
+[0m14:47:51.565803 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.01 seconds
+[0m14:47:51.569200 [debug] [Thread-1 (]: Writing runtime sql for node "model.telemetry_dbt.daily_event_summary"
+[0m14:47:51.570310 [debug] [Thread-1 (]: dbt_clickhouse adapter: On model.telemetry_dbt.daily_event_summary: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "telemetry_dbt", "target_name": "dev", "node_id": "model.telemetry_dbt.daily_event_summary"} */
+
+  
+    
+    
+    
+        
+         
+
+
+        
+  
+
+  insert into `telemetry`.`daily_event_summary`
+        ("event_date", "event_type", "total_events", "unique_users")-- The Marts layer combines staging models and runs heavy aggregations
+-- to provide clean, ready-to-use data for business dashboards.
+
+-- Notice the ref() function! dbt automatically knows it must run stg_events first.
+WITH staging_events AS (
+    SELECT * FROM `telemetry`.`stg_events`
+)
+
+SELECT
+    event_date,
+    event_type,
+    COUNT(user_id) AS total_events,
+    -- countDistinct is highly optimized in ClickHouse for finding Unique Users
+    countDistinct(user_id) AS unique_users
+FROM staging_events
+GROUP BY
+    event_date,
+    event_type
+  ...
+[0m14:47:51.585893 [debug] [Thread-1 (]: dbt_clickhouse adapter: SQL status: OK in 0.01 seconds
+[0m14:47:51.587236 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '34ca9920-90d1-4a58-86ef-74e16eea9b8b', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE8D82810>]}
+[0m14:47:51.587875 [info ] [Thread-1 (]: 2 of 2 OK created sql table model `telemetry`.`daily_event_summary` ............ [[32mOK[0m in 0.12s]
+[0m14:47:51.588449 [debug] [Thread-1 (]: Finished running node model.telemetry_dbt.daily_event_summary
+[0m14:47:51.589610 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m14:47:51.590197 [debug] [MainThread]: Connection 'list_' was left open.
+[0m14:47:51.590197 [debug] [MainThread]: On list_: Close
+[0m14:47:51.590719 [debug] [MainThread]: Connection 'list__telemetry' was left open.
+[0m14:47:51.590719 [debug] [MainThread]: On list__telemetry: Close
+[0m14:47:51.591276 [debug] [MainThread]: Connection 'model.telemetry_dbt.daily_event_summary' was left open.
+[0m14:47:51.591276 [debug] [MainThread]: On model.telemetry_dbt.daily_event_summary: Close
+[0m14:47:51.591844 [info ] [MainThread]: 
+[0m14:47:51.592455 [info ] [MainThread]: Finished running 1 table model, 1 view model in 0 hours 0 minutes and 2.18 seconds (2.18s).
+[0m14:47:51.593611 [debug] [MainThread]: Command end result
+[0m14:47:51.659877 [debug] [MainThread]: Wrote artifact WritableManifest to C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\target\manifest.json
+[0m14:47:51.661908 [debug] [MainThread]: Wrote artifact SemanticManifest to C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\target\semantic_manifest.json
+[0m14:47:51.667101 [debug] [MainThread]: Wrote artifact RunExecutionResult to C:\Users\Kei\MyProjects\telemetry-platform\data-pipeline\telemetry_dbt\target\run_results.json
+[0m14:47:51.667652 [info ] [MainThread]: 
+[0m14:47:51.668204 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m14:47:51.668779 [info ] [MainThread]: 
+[0m14:47:51.669380 [info ] [MainThread]: Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=2
+[0m14:47:51.669984 [debug] [MainThread]: Command `python -m dbt.cli.main run` succeeded at 14:47:51.669984 after 4.18 seconds
+[0m14:47:51.670539 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE64E45F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE64E5A60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001AAE642E1B0>]}
+[0m14:47:51.671126 [debug] [MainThread]: Flushing usage events
+[0m14:47:52.747345 [debug] [MainThread]: An error was encountered while trying to flush usage events

@@ -1,0 +1,1 @@
+{"_invocation_id": "34ca9920-90d1-4a58-86ef-74e16eea9b8b", "linked": {"0": {"name": "model.telemetry_dbt.daily_event_summary", "type": "model"}, "1": {"name": "model.telemetry_dbt.stg_events", "type": "model", "succ": [0]}}}
