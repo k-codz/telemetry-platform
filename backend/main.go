@@ -122,7 +122,7 @@ func (h *apiHandler) handleIngest(w http.ResponseWriter, r *http.Request) {
 		// Make a fast RPC call to the Python service via internal K8s DNS
 		mlResp, err := h.mlClient.Post("http://ml-service:8000/predict", "application/json", bytes.NewBufferString(mlReqBody))
 		if err == nil {
-			defer mlResp.Body.Close()
+			defer func() { _ = mlResp.Body.Close() }()
 			var mlResult struct {
 				IsAnomaly bool `json:"is_anomaly"`
 			}
