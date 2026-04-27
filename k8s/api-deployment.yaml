@@ -18,7 +18,7 @@ spec:
       containers:
       - name: api
         # UPDATE THIS LINE to use the newly compiled v1.1 image
-        image: telemetry-api:v1.2
+        image: telemetry-api:v1.3
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
